@@ -1,52 +1,72 @@
 package soa.utwente.nl.AvailabilityUpdate;
 
 import org.springframework.stereotype.Service;
+import soa.utwente.nl.AvailabilityUpdate.Classes.Availability;
 import soa.utwente.nl.AvailabilityUpdate.Exceptions.NotFoundException;
 
-import javax.websocket.Session;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class AvailabilityService {
-    private static final Map<Integer, Availability> availabilities = Collections.synchronizedMap(new HashMap<>());
-    private static int idCounter = 1;
+    private static final List<Availability> availabilities = new ArrayList<>();
+
 
     public Availability createAvailability(Availability availability) {
-        availability.setSessionId(idCounter++);
-        availabilities.put(availability.getSessionId(), availability);
+        availabilities.add(availability);
         return availability;
     }
 
     public Availability updateAvailability(Availability availability){
-        availabilities.put(availability.getSessionId(), availability);
+        availabilities.set(availability.getSessionId(), availability);
         return availability;
     }
 
     public void deleteAvailability(Integer id){
-        if(!availabilities.containsKey(id)) throw new NotFoundException("Could not find user with id " + id);
-        availabilities.entrySet().removeIf(x-> x.getKey().equals(id));
+       availabilities.remove(getAvailability(id));
     }
 
     public Availability getAvailability(Integer id){
-        if(!availabilities.containsKey(id)) throw new NotFoundException("Could not find user with id " + id);
-        return availabilities.get(id);
+        return availabilities.stream().filter(availability -> availability.getSessionId() == id).findFirst().orElseThrow(NotFoundException::new);
     }
 
     public List<Integer> getAvailable(Integer id){
-        if(!availabilities.containsKey(id)) throw new NotFoundException("Could not find user with id " + id);
-        return availabilities.get(id).getAvailable();
+        return getAvailability(id).getAvailable();
     }
 
     public List<Integer> getMaybe(Integer id){
-        if(!availabilities.containsKey(id)) throw new NotFoundException("Could not find user with id " + id);
-        return availabilities.get(id).getMaybe();
+        return getAvailability(id).getMaybe();
     }
 
     public List<Integer> getNotAvailable(Integer id){
-        if(!availabilities.containsKey(id)) throw new NotFoundException("Could not find user with id " + id);
-        return availabilities.get(id).getNotAvailable();
+        return getAvailability(id).getNotAvailable();
     }
+
+    public boolean updateAvailableUser(int sessionId, int userId){
+       Availability userAvailability = getAvailability(sessionId);
+       if(userAvailability.getAvailable().contains(userId)){return true;}
+       if(userAvailability.getMaybe().contains(userId)){userAvailability.getMaybe().remove(userId);}
+       if(userAvailability.getNotAvailable().contains(userId)){userAvailability.getNotAvailable().remove(userId);}
+       userAvailability.getAvailable().add(userId);
+       return true;
+    }
+
+    public boolean updateMaybeUser(int sessionId, int userId){
+        Availability userAvailability = getAvailability(sessionId);
+        if(userAvailability.getMaybe().contains(userId)){return true;}
+        if(userAvailability.getAvailable().contains(userId)){userAvailability.getAvailable().remove(userId);}
+        if(userAvailability.getNotAvailable().contains(userId)){userAvailability.getNotAvailable().remove(userId);}
+        userAvailability.getMaybe().add(userId);
+        return true;
+    }
+
+    public boolean updateNotAvailableUser(int sessionId, int userId){
+        Availability userAvailability = getAvailability(sessionId);
+        if(userAvailability.getNotAvailable().contains(userId)){return true;}
+        if(userAvailability.getMaybe().contains(userId)){userAvailability.getMaybe().remove(userId);}
+        if(userAvailability.getAvailable().contains(userId)){userAvailability.getAvailable().remove(userId);}
+        userAvailability.getNotAvailable().add(userId);
+        return true;
+    }
+
+
 }

@@ -1,4 +1,4 @@
-package soa.utwente.nl.AvailabilityUpdate;
+package soa.utwente.nl.AvailabilityUpdate.Classes;
 
 import java.util.List;
 
