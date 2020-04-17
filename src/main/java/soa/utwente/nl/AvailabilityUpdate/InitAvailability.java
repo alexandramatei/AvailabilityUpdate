@@ -23,33 +23,31 @@ public class InitAvailability {
         service.createAvailability(new Availability(
                 1,
                 new ArrayList<Integer>(){{
-                     add(2);
-                     add(4);
-                     add(3); }},
+                     add(201934);
+                     add(202134); }},
                 new ArrayList<Integer>(){{
-                    add(10);
-                    add(122);
-                    add(35); }},
+                    add(208934);
+                    add(212134);
+                    add(202564); }},
                  new ArrayList<Integer>(){{
-                    add(156);
-                    add(2345);
-                    add(3457); }}
+                    add(205864);
+                    add(202590);
+                    add(207864); }}
 
                 ));
         service.createAvailability(new Availability(
                 2,
                 new ArrayList<Integer>(){{
-                    add(2);
-                    add(4);
-                    add(3); }},
+                    add(201934);
+                    add(202134); }},
                 new ArrayList<Integer>(){{
-                    add(10);
-                    add(122);
-                    add(35); }},
+                    add(208934);
+                    add(212134);
+                    add(202564); }},
                 new ArrayList<Integer>(){{
-                    add(156);
-                    add(2345);
-                    add(3457); }}
+                    add(205864);
+                    add(202590);
+                    add(207864); }}
 
         ));
 

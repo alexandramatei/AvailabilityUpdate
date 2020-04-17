@@ -44,17 +44,17 @@ public class AvailabilityService {
     public boolean updateAvailableUser(int sessionId, int userId){
        Availability userAvailability = getAvailability(sessionId);
        if(userAvailability.getAvailable().contains(userId)){return true;}
-       if(userAvailability.getMaybe().contains(userId)){userAvailability.getMaybe().remove(userId);}
-       if(userAvailability.getNotAvailable().contains(userId)){userAvailability.getNotAvailable().remove(userId);}
-       userAvailability.getAvailable().add(userId);
+        userAvailability.getNotAvailable().removeIf(integer -> integer==userId);
+        userAvailability.getMaybe().removeIf(integer -> integer==userId);
+        userAvailability.getAvailable().add(userId);
        return true;
     }
 
     public boolean updateMaybeUser(int sessionId, int userId){
         Availability userAvailability = getAvailability(sessionId);
         if(userAvailability.getMaybe().contains(userId)){return true;}
-        if(userAvailability.getAvailable().contains(userId)){userAvailability.getAvailable().remove(userId);}
-        if(userAvailability.getNotAvailable().contains(userId)){userAvailability.getNotAvailable().remove(userId);}
+        userAvailability.getAvailable().removeIf(integer -> integer==userId);
+        userAvailability.getNotAvailable().removeIf(integer -> integer==userId);
         userAvailability.getMaybe().add(userId);
         return true;
     }
@@ -62,8 +62,8 @@ public class AvailabilityService {
     public boolean updateNotAvailableUser(int sessionId, int userId){
         Availability userAvailability = getAvailability(sessionId);
         if(userAvailability.getNotAvailable().contains(userId)){return true;}
-        if(userAvailability.getMaybe().contains(userId)){userAvailability.getMaybe().remove(userId);}
-        if(userAvailability.getAvailable().contains(userId)){userAvailability.getAvailable().remove(userId);}
+        userAvailability.getAvailable().removeIf(integer -> integer==userId);
+        userAvailability.getMaybe().removeIf(integer -> integer==userId);
         userAvailability.getNotAvailable().add(userId);
         return true;
     }
